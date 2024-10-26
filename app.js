@@ -151,30 +151,30 @@ document.addEventListener('DOMContentLoaded', function () {
 document.getElementById('filtrar-horarios').addEventListener('click', filtrarHorarios);
 
 
-    // Evento de cadastro de professor
-    document.getElementById('professor-form').addEventListener('submit', function (event) {
-        event.preventDefault();
+// Evento de cadastro de professor
+document.getElementById('professor-form').addEventListener('submit', function (event) {
+    event.preventDefault();
 
-        const nome = document.getElementById('professor-name').value;
-        const disponibilidade = Array.from(
-            document.querySelectorAll('#disponibilidade input:checked')
-        ).map(input => input.value);
+    const nome = document.getElementById('professor-name').value;
+    const disponibilidade = Array.from(document.querySelectorAll('#disponibilidade input:checked')).map(input => input.value);
+    
+    // Captura corretamente todos os dias e turnos de folga selecionados
+    const folgaDias = Array.from(document.querySelectorAll('#folga-dia .dia-checkbox:checked')).map(input => input.value);
+    const folgaTurnos = Array.from(document.querySelectorAll('#folga-turno input:checked')).map(input => input.value);
 
-        const folgaDia = document.getElementById('folga-dia').value;
-        const folgaTurnos = Array.from(
-            document.querySelectorAll('#folga-turno input:checked')
-        ).map(input => input.value);
-
-        professores.push({
-            nome,
-            disponibilidade,
-            folga: { dia: folgaDia, turno: folgaTurnos }
-        });
-
-        preencherOpcoes(); // Atualiza os selects
-        alert('Professor cadastrado com sucesso!');
-        this.reset();
+    professores.push({
+        nome,
+        disponibilidade,
+        folga: { dias: folgaDias, turnos: folgaTurnos }
     });
+
+    preencherOpcoes(); // Atualiza as opções no formulário
+    alert('Professor cadastrado com sucesso!');
+    this.reset(); // Limpa o formulário após cadastro
+});
+
+
+
     // Evento de cadastro de turma
     document.getElementById('turma-form').addEventListener('submit', function (event) {
         event.preventDefault();
@@ -200,63 +200,72 @@ document.getElementById('filtrar-horarios').addEventListener('click', filtrarHor
         alert('Aula cadastrada com sucesso!');
         this.reset();
     });
-    // Função para alocar aula
-    function alocarAula(professor, materia, turma, quantidadeAulas) {
-        let horariosDisponiveis = [];
 
-        // Preenche os horários disponíveis com base na disponibilidade do professor
-        if (professor.disponibilidade.includes('matutino')) {
-            horariosDisponiveis.push(...horariosMatutino);
-        }
-        if (professor.disponibilidade.includes('vespertino')) {
-            horariosDisponiveis.push(...horariosVespertino);
-        }
-        if (professor.disponibilidade.includes('noturno')) {
-            horariosDisponiveis.push(...horariosNoturno);
-        }
 
-        let alocadas = 0; // Contador de aulas alocadas
-        let todasCombinacoes = [];
+// Aloca aulas respeitando folgas, disponibilidade e evitando horários consecutivos
+function alocarAula(professor, materia, turma, quantidadeAulas) {
+    let horariosDisponiveis = [];
 
-        // Gera todas as combinações possíveis de horário e dia
-        horariosDisponiveis.forEach(horario => {
-            diasSemana.forEach(dia => {
-                todasCombinacoes.push({ horario, dia });
-            });
+    // Preenche os horários disponíveis com base na disponibilidade do professor
+    if (professor.disponibilidade.includes('matutino')) horariosDisponiveis.push(...horariosMatutino);
+    if (professor.disponibilidade.includes('vespertino')) horariosDisponiveis.push(...horariosVespertino);
+    if (professor.disponibilidade.includes('noturno')) horariosDisponiveis.push(...horariosNoturno);
+
+    let alocadas = 0;
+    let todasCombinacoes = [];
+
+    // Gera todas as combinações possíveis de horário e dia
+    horariosDisponiveis.forEach(horario => {
+        diasSemana.forEach(dia => {
+            todasCombinacoes.push({ horario, dia });
         });
+    });
 
-        // Embaralha as combinações para uma alocação mais aleatória
-        todasCombinacoes = todasCombinacoes.sort(() => Math.random() - 0.5);
+    // Embaralha as combinações para uma alocação mais aleatória
+    todasCombinacoes = todasCombinacoes.sort(() => Math.random() - 0.5);
 
-        // Aloca as aulas obrigatoriamente, percorrendo as combinações
-        for (let i = 0; i < todasCombinacoes.length && alocadas < quantidadeAulas; i++) {
-            const { horario, dia } = todasCombinacoes[i];
-            const turno = obterTurnoPorHorario(horario);
+    // Aloca as aulas evitando horários consecutivos
+    for (let i = 0; i < todasCombinacoes.length && alocadas < quantidadeAulas; i++) {
+        const { horario, dia } = todasCombinacoes[i];
+        const turno = obterTurnoPorHorario(horario);
 
-            // Verifica se a folga permite a alocação
-            if (validarFolga(professor, dia, turno)) {
-                const cell = document.querySelector(`td[data-horario="${horario}"][data-dia="${dia}"]`);
+        // Verifica se a folga permite a alocação
+        if (validarFolga(professor, dia, turno)) {
+            const cell = document.querySelector(`td[data-horario="${horario}"][data-dia="${dia}"]`);
 
-                if (cell && cell.textContent === 'Aula vaga') {
-                    cell.textContent = `${professor.nome} - ${materia} (${turma})`;
-                    alocadas++;
-                }
+            // Evita horários consecutivos verificando o anterior e o próximo
+            const horarioIndex = horariosDisponiveis.indexOf(horario);
+            const horarioAnterior = horariosDisponiveis[horarioIndex - 1];
+            const horarioProximo = horariosDisponiveis[horarioIndex + 1];
+            const cellAnterior = document.querySelector(`td[data-horario="${horarioAnterior}"][data-dia="${dia}"]`);
+            const cellProximo = document.querySelector(`td[data-horario="${horarioProximo}"][data-dia="${dia}"]`);
+
+            if (
+                cell && cell.textContent === 'Aula vaga' &&
+                (!cellAnterior || cellAnterior.textContent !== `${professor.nome} - ${materia} (${turma})`) &&
+                (!cellProximo || cellProximo.textContent !== `${professor.nome} - ${materia} (${turma})`)
+            ) {
+                cell.textContent = `${professor.nome} - ${materia} (${turma})`;
+                alocadas++;
             }
         }
-
-        // Verifica se todas as aulas foram alocadas, se não, exibe erro
-        if (alocadas < quantidadeAulas) {
-            alert(`Erro: Apenas ${alocadas} de ${quantidadeAulas} aulas foram alocadas. Verifique a disponibilidade.`);
-        } else {
-            alert(`${quantidadeAulas} aulas alocadas com sucesso para ${professor.nome}.`);
-        }
     }
+
+    // Verifica se todas as aulas foram alocadas, se não, exibe erro
+    if (alocadas < quantidadeAulas) {
+        alert(`Erro: Apenas ${alocadas} de ${quantidadeAulas} aulas foram alocadas. Verifique a disponibilidade.`);
+    } else {
+        alert(`${quantidadeAulas} aulas alocadas com sucesso para ${professor.nome}.`);
+    }
+}
+
+
 
     // Valida se o horário está disponível com base na folga
     function validarFolga(professor, dia, turno) {
         return !(
-            professor.folga.dia === dia &&
-            professor.folga.turno.includes(turno)
+            professor.folga.dias.includes(dia) && // Verifica se o dia está nos dias de folga
+            professor.folga.turnos.includes(turno) // Verifica se o turno está nos turnos de folga
         );
     }
 

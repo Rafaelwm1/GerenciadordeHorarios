@@ -6,18 +6,11 @@
     <title>Gerenciamento de Horários - Escola</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <head>
-        <!-- Favicon -->
-        <link rel="icon" href="https://i.ibb.co/XLL71ZJ/ESCOLA-ESTADUAL-removebg-preview.png" type="image/png" sizes="512x512">
-    </head>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
-</head> 
+</head>
 <body>
-    
     <div class="container">
         <header>
             <img src="https://i.ibb.co/XLL71ZJ/ESCOLA-ESTADUAL-removebg-preview.png" alt="Logo Escola" id="logo-escola">
@@ -41,7 +34,7 @@
                 <form id="professor-form">
                     <label for="professor-name">Nome do Professor:</label>
                     <input type="text" id="professor-name" required>
-                    
+
                     <fieldset id="disponibilidade">
                         <legend>Disponibilidade:</legend>
                         <input type="checkbox" id="disponibilidade-matutino" value="matutino">
@@ -51,18 +44,28 @@
                         <input type="checkbox" id="disponibilidade-noturno" value="noturno">
                         <label for="disponibilidade-noturno">Noturno</label>
                     </fieldset>
+
+                    <label>Dias de Folga:</label>
+                    <div id="folga-dia" class="dias-folga">
+                        <input type="checkbox" id="folga-segunda" value="Segunda" class="dia-checkbox">
+                        <label for="folga-segunda">Segunda</label>
                     
-                    <label for="folga-dia">Folga (Dia):</label>
-                    <select id="folga-dia">
-                        <option value="">Nenhuma</option>
-                        <option value="Segunda">Segunda</option>
-                        <option value="Terça">Terça</option>
-                        <option value="Quarta">Quarta</option>
-                        <option value="Quinta">Quinta</option>
-                        <option value="Sexta">Sexta</option>
-                    </select>
+                        <input type="checkbox" id="folga-terca" value="Terça" class="dia-checkbox">
+                        <label for="folga-terca">Terça</label>
                     
-                    <fieldset id="folga-turno">
+                        <input type="checkbox" id="folga-quarta" value="Quarta" class="dia-checkbox">
+                        <label for="folga-quarta">Quarta</label>
+                    
+                        <input type="checkbox" id="folga-quinta" value="Quinta" class="dia-checkbox">
+                        <label for="folga-quinta">Quinta</label>
+                    
+                        <input type="checkbox" id="folga-sexta" value="Sexta" class="dia-checkbox">
+                        <label for="folga-sexta">Sexta</label>
+                    </div>
+                    <p></p><p></p><p></p><p></p>
+
+                    <fieldset
+                     id="folga-turno">
                         <legend>Turno(s) de Folga:</legend>
                         <input type="checkbox" id="folga-matutino" value="matutino">
                         <label for="folga-matutino">Matutino</label>
@@ -71,7 +74,7 @@
                         <input type="checkbox" id="folga-noturno" value="noturno">
                         <label for="folga-noturno">Noturno</label>
                     </fieldset>
-                    
+
                     <label for="quantidade-aulas">Quantidade de Aulas:</label>
                     <input type="number" id="quantidade-aulas" required>
                     <button type="submit">Cadastrar Professor</button>
@@ -95,16 +98,12 @@
                 <form id="aula-form">
                     <label for="select-professor">Professor:</label>
                     <select id="select-professor" required></select>
-
                     <label for="materia">Matéria:</label>
                     <input type="text" id="materia" required>
-
                     <label for="select-turma">Turma:</label>
                     <select id="select-turma" required></select>
-
                     <label for="quantidade-aulas-aula">Quantidade de Aulas:</label>
                     <input type="number" id="quantidade-aulas-aula" required>
-
                     <fieldset id="select-turno-aula">
                         <legend>Turno(s) de Aula:</legend>
                         <input type="checkbox" id="turno-matutino" value="matutino">
@@ -114,7 +113,6 @@
                         <input type="checkbox" id="turno-noturno" value="noturno">
                         <label for="turno-noturno">Noturno</label>
                     </fieldset>
-                    
                     <button type="submit">Cadastrar Aula</button>
                 </form>
             </section>
@@ -146,48 +144,66 @@
         <!-- Aba Filtro -->
         <div id="tab3" class="tab-content">
             <section>
-                <h2>Filtro de Horários</h2>
-                <label for="select-professor-filtro">Selecionar Professor:</label>
-                <select id="select-professor-filtro" required></select>
-            
-                <label for="select-turma-filtro">Selecionar Turma:</label>
-                <select id="select-turma-filtro" required></select>
-            
-                <br><br>
-                <label>Turno:</label>
-                <input type="radio" id="integral" name="turno" value="integral" checked> Integral
-                <input type="radio" id="noturno" name="turno" value="noturno"> Noturno
-                <input type="radio" id="ambos" name="turno" value="ambos"> Ambos
-            
-                <br><br>
+                <div class="filtro-container">
+                    <h2>Filtro de Horários</h2>
 
-                <!-- Nome do professor após o filtro -->
-                <h2 id="nome-professor-filtrado"></h2>
-                <h2 id="nome-turma-filtrado"></h2>
-            
-                <section>
-                    <h2>Quadro de Horários Filtrado</h2>
-                    <table id="filtro-table">
-                        <thead>
-                            <tr>
-                                <th>Horário</th>
-                                <th>Segunda</th>
-                                <th>Terça</th>
-                                <th>Quarta</th>
-                                <th>Quinta</th>
-                                <th>Sexta</th>
-                            </tr>
-                        </thead>
-                        <tbody id="filtro-table-body">
-                            <!-- Horários filtrados serão exibidos aqui -->
-                        </tbody>
-                    </table>
-                </section>
+                    <div class="select-group">
+                        <div class="select-container">
+                            <label for="select-professor-filtro">Selecionar Professor:</label>
+                            <select id="select-professor-filtro">
+                                <option value="">Todos</option>
+                            </select>
+                        </div>
 
-                <!-- Botões de Exportação -->
-                <button id="filtrar-horarios">Filtrar Horários</button>
-                <button id="exportar-filtro-excel">Exportar Filtro para Excel</button>
-                <button id="exportar-filtro-pdf">Exportar Filtro para PDF</button>
+                        <div class="select-container">
+                            <label for="select-turma-filtro">Selecionar Turma:</label>
+                            <select id="select-turma-filtro">
+                                <option value="">Todas</option>
+                            </select>
+                        </div>
+                    </div>
+                <p></p>
+                    <div class="turno-group">
+                        <label>Turno:</label>
+                        <input type="radio" id="integral" name="turno" value="integral" checked>
+                        <label for="integral">Integral</label>
+                        <input type="radio" id="noturno" name="turno" value="noturno">
+                        <label for="noturno">Noturno</label>
+                        <input type="radio" id="ambos" name="turno" value="ambos">
+                        <label for="ambos">Ambos</label>
+                    </div>
+
+                    <div class="filtro-resultados">
+                        <h2 id="nome-professor-filtrado"></h2>
+                        <h2 id="nome-turma-filtrado"></h2>
+                    </div>
+
+                    <section>
+                        <h2>Quadro de Horários Filtrado</h2>
+                        <table id="filtro-table">
+                            <thead>
+                                <tr>
+                                    <th>Horário</th>
+                                    <th>Segunda</th>
+                                    <th>Terça</th>
+                                    <th>Quarta</th>
+                                    <th>Quinta</th>
+                                    <th>Sexta</th>
+                                </tr>
+                            </thead>
+                            <tbody id="filtro-table-body">
+                                <!-- Horários filtrados serão exibidos aqui -->
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <!-- Botões de Exportação - Exibidos apenas na aba Filtro -->
+                    <div class="export-buttons">
+                        <button id="filtrar-horarios">Filtrar Horários</button>
+                        <button id="exportar-filtro-excel">Exportar Filtro para Excel</button>
+                        <button id="exportar-filtro-pdf">Exportar Filtro para PDF</button>
+                    </div>
+                </div>
             </section>
         </div>
 

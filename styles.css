@@ -5,7 +5,7 @@
     box-sizing: border-box;
 }
 
-/* Fontes modernas */
+/* Fontes e cores básicas */
 body {
     font-family: 'Roboto', sans-serif;
     background-color: #f4f4f4;
@@ -13,14 +13,14 @@ body {
     line-height: 1.6;
 }
 
-/* Container centralizado e com padding */
+/* Container principal */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* Header estilizado com layout flex e cores da escola */
+/* Header */
 header {
     display: flex;
     justify-content: space-between;
@@ -39,9 +39,10 @@ header img {
 
 header h1 {
     font-size: 2.5rem;
+    font-weight: bold;
 }
 
-/* Menus de navegação (abas) */
+/* Abas de navegação */
 .tabs {
     display: flex;
     list-style-type: none;
@@ -49,8 +50,8 @@ header h1 {
     margin: 20px 0;
     background-color: #0066cc;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .tabs li {
@@ -60,6 +61,7 @@ header h1 {
     padding: 15px;
     cursor: pointer;
     color: white;
+    font-weight: bold;
     transition: background-color 0.3s ease, transform 0.3s;
 }
 
@@ -83,7 +85,7 @@ header h1 {
     display: block;
 }
 
-/* Seções e formulários */
+/* Seções de formulário */
 section {
     background-color: white;
     padding: 20px;
@@ -95,8 +97,10 @@ section {
 section h2 {
     font-size: 1.8rem;
     color: #333;
+    font-weight: bold;
 }
 
+/* Estilo do formulário */
 form {
     display: flex;
     flex-direction: column;
@@ -106,14 +110,19 @@ form label {
     margin-top: 10px;
     font-size: 1.1rem;
     color: #333;
+    font-weight: bold;
 }
 
-form input, form select, form button {
-    padding: 12px;
+form input,
+form select,
+form button {
+    padding: 14px;
     margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 form input:focus,
@@ -129,13 +138,78 @@ form button {
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-weight: bold;
+    border-radius: 8px;
 }
 
 form button:hover {
     background-color: #218838;
 }
 
-/* Tabela estilizada */
+/* Estilo de campos de seleção (select) */
+.select-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 10px;
+}
+
+.select-container select {
+    width: 100%;
+    padding: 14px 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #f4f4f4;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+    appearance: none; /* Remove a seta padrão dos navegadores */
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="10" viewBox="0 0 14 10"><path fill="%23333" d="M7 10L0 0h14z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.select-container select:focus {
+    outline: none;
+    border-color: #28a745;
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.3);
+}
+
+.select-container::after {
+    content: '';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.dias-folga label {
+    display: inline-block;
+    padding: 8px 12px;
+    margin-right: 10px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border: 2px solid #ddd;
+}
+
+.dias-folga input[type="checkbox"] {
+    display: none;
+}
+
+/* Aplica o estilo ao label quando o checkbox é marcado */
+.dias-folga input[type="checkbox"]:checked + label {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
+}
+
+
+/* Tabelas */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -147,31 +221,35 @@ th, td {
     padding: 12px;
     text-align: center;
     font-size: 1rem;
+    color: #333;
 }
 
 th {
     background-color: #0066cc;
     color: white;
+    font-weight: bold;
 }
 
 tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
-td {
-    color: #333;
+.turno-header {
+    background-color: #00509e;
+    color: white;
+    font-weight: bold;
 }
 
 /* Botões de exportação */
 button {
-    padding: 10px;
-    margin-top: 20px;
+    padding: 12px 20px;
     background-color: #28a745;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-weight: bold;
 }
 
 button:hover {
@@ -209,65 +287,9 @@ footer {
         font-size: 2rem;
     }
 
-    button {
+    button,
+    form input,
+    form select {
         font-size: 0.9rem;
     }
-
-    form input, form select, form button {
-        font-size: 0.9rem;
-    }
-}
-
-
-/* Estilo moderno para os elementos select */
-select {
-    width: 100%;
-    padding: 12px;
-    margin-top: 5px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    background-color: #f4f4f4;
-    font-size: 1rem;
-    color: #333;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    appearance: none;
-    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="10" viewBox="0 0 14 10"><path fill="%23333" d="M7 10L0 0h14z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 12px;
-}
-
-select:focus {
-    border-color: #28a745;
-    box-shadow: 0 0 8px rgba(40, 167, 69, 0.5);
-    outline: none;
-}
-
-select:hover {
-    border-color: #28a745;
-}
-
-/* Seta personalizada para o select */
-.select-container {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-}
-
-.select-container::after {
-    content: '▼';
-    font-size: 0.8rem;
-    color: #333;
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-}
-
-/* Removendo a seta padrão dos navegadores */
-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
 }

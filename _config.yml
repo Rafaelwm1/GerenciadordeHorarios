@@ -1,0 +1,5 @@
+title: Sistema de Gerenciamento de Horários Escolares
+description: Sistema web para gerenciamento de horários escolares
+remote_theme: pages-themes/cayman@v0.2.0
+plugins:
+- jekyll-remote-theme
